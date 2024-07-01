@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+
+# Função para editar o mês
+editar_mes() {
+    echo "Qual é mês que deseja editar?"
+    ls /home/sigla/Finanças
+    read mes
+    if [ -f "/home/sigla/Finanças/$mes" ]; then
+        vim /home/sigla/Finanças/$mes
+    else
+        echo "Mês não encontrado!"
+    fi
+}
+
+# Função para criar um mês
+criar_mes() {
+    total=0
+
+    echo "Qual é o mês que deseja criar?"
+    read novo_mes
+
+    # Verifica se o mês já existe
+    if [ -f "/home/sigla/Finanças/$novo_mes" ]; then
+        echo "O mês já existe! Escolha outro nome."
+    else
+        echo "$novo_mes foi criado com sucesso!"
+        break
+    fi
+  read -p "Qual é o valor do ganho? " ganho
+
+    echo "Vamos informar as despesas"
+    while true; do
+        read -p "Digite a categoria (ou 'sair' para terminar): " categoria
+        if [[ "$categoria" == "sair" ]]; then
+            break
+        fi
+        read -p "Digite o valor da categoria: " valor
+
+        # Validação para garantir que o valor é um número
+        if ! [[ "$valor" =~ ^[0-9]+$ ]]; then
+            echo "Valor inválido, por favor insira um número."
+            continue
+        fi
+
+        total=$((total + valor))
+    done
+
+    echo "A soma total das despesas é: $total"
+    echo "Seu ganho é: $ganho"
+    echo "Seu saldo final é: $((ganho - total))"
+}
+
+# Menu do programa
+echo "Bem-vindo à ajuda de sua finança"
+echo "Favor escolha a opção desejada"
+
+while true; do
+    echo "1. Deseja editar um mês já existente."
+    echo "2. Criar um novo mês."
+    echo "3. Sair do programa."
+    read opcao
+
+    case $opcao in
+        1)
+            editar_mes
+            ;;
+        2)
+            criar_mes
+            ;;
+        3)
+            echo
+            echo "Saindo do programa..."
+            sleep 1
+            exit
+            ;;
+        *)
+            echo "Opção inválida, tente novamente"
+            echo
+            ;;
+    esac
+    echo
+done
