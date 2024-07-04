@@ -55,12 +55,14 @@ echo "Bem-vindo à ajuda de sua finança"
 echo "Favor escolha a opção desejada"
 
 while true; do
-    echo "|======================================="
-    echo "|"
-    echo "1. Deseja editar um mês já existente."
-    echo "2. Criar um novo mês."
-    echo "3. Sair do programa."
-    read opcao
+    echo "|=========================================|"
+    echo "|                                         |"
+    echo "|  1. Deseja editar um mês já existente.  |"
+    echo "|  2. Criar um novo mês.                  |"
+    echo "|  3. Sair do programa.                   |"
+    echo "|                                         |"
+    echo "|=========================================|"
+read opcao
 
     case $opcao in
         1)
