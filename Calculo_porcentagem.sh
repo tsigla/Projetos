@@ -1,10 +1,22 @@
 #!/bin/bash
 
+# Boas vindas!
+echo "O programa foi criado para descobrir qual é a diferença da porcentagem entre os valores passados 
+Exemplo visual; 
+|=====================================================|
+| (valor-inicial + valor-porcento) - y% = valor-final |
+|=====================================================|
+"
+
 # Define os valores iniciais
-valor_inicial=400
-percentual_acrescimo=10
-valor_final_com_acrescimo=440
-valor_final=424
+echo "Informa o valor inicial ?"
+read  valor_inicial
+echo
+echo "Informa o valor da % do valor inicial ?"
+read percentual_acrescimo
+echo
+echo "Informa o valor final, assim descobrindo o valor da diferença de % ?"
+read valor_final
 
 # Calcula o valor com o acréscimo percentual junto com a calculadora avançada bc.
 # O -l aplica as casas decimais com precisão no resultado.
