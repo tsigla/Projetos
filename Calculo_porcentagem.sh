@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Boas vindas!
-echo "O programa foi criado para descobrir qual é a diferença da porcentagem entre os valores passados 
+echo -e "O programa foi criado para descobrir qual é a diferença da porcentagem entre os valores passados.
 Exemplo visual; 
 |=====================================================|
 | (valor-inicial + valor-porcento) - y% = valor-final |
@@ -9,13 +9,13 @@ Exemplo visual;
 "
 
 # Define os valores iniciais
-echo "Informa o valor inicial ?"
+echo "Informa o valor inicial."
 read  valor_inicial
 echo
-echo "Informa o valor da % do valor inicial ?"
+echo "Informa o valor da % do valor inicial."
 read percentual_acrescimo
 echo
-echo "Informa o valor final, assim descobrindo o valor da diferença de % ?"
+echo "Informa o valor final, assim descobrindo o valor da diferença de % ."
 read valor_final
 
 # Calcula o valor com o acréscimo percentual junto com a calculadora avançada bc.
