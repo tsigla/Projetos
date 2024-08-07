@@ -48,15 +48,12 @@ adicionar_nota(){
 
 editar_nota(){
 	clear
-	lugar="(/home/$User/Agenda"/*)
-	for i in "${!lugar[@]}"; do
-		feito=$(basename "${lugar[$i]}")
-		echo "$((i+1)) $feito"
-	done
+	ls -1 ~/Agenda | sort | awk '{print NR, $0}'
+	echo
 	echo 'Entre as opções, qual nota deseja editar.'
 	read -r
 	case opcao in
-
+		
 	esac
 }
 
