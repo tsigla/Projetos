@@ -23,7 +23,7 @@ ADDS=$(tput smul)
 RMS=$(tput sgr0)
 
 #### Caminho
-AGENDA_DIR="./Agenda"
+AGENDA="/home/$USER/Agenda"
 
 #### Criar o diretório Agenda no home e o -p valida sem erro caso já existir.
 mkdir -p "$AGENDA_DIR"
@@ -31,16 +31,16 @@ mkdir -p "$AGENDA_DIR"
 #### Função para adicionar uma nova nota
 adicionar_nota(){
 	clear
-	echo 'Digite o título do assunto.'
-	read -r titulo
-	arquivo="$AGENDA_DIR/$titulo.txt"
+	echo -e "Digite o nome do título da nova nota"
+	read -r nota
+	arquivo="$AGENDA/$nota.txt"
 
-	if [ -f $arquivo ]; then
-		echo -e "$v{vermelho_claro}Nota já existente.${sc}"
+	if [ -f "$arquivo" ]; then
+		echo "Título já existente, tente outro título. "
 		return
 	fi
 
-	echo -e "${amarelo}Digite o conteudo da nota. Tecla ${ADDS}CTRL+D${RMS} ${amarelo}quando terminar.${sc}"
+	echo -e "${amarelo}Digite o conteúdo da nota. Tecla ${ADDS}CTRL+D${RMS} ${amarelo}quando terminar.${sc}"
 	cat > "$arquivo"
 	echo
 	echo -e "${verde}Nota ${rosa}$titulo${verde}criado com sucesso.${sc}"
@@ -48,13 +48,32 @@ adicionar_nota(){
 
 editar_nota(){
 	clear
-	ls -1 ~/Agenda | sort | awk '{print NR, $0}'
+        ls -1 "$AGENDA" | cut -d "." -f 1 
+        echo 'Entre as opções, qual nota deseja editar.'
+        read -r nota
+        nota="$AGENDA/$nota.txt"
+        
+        if [ ! -f "$nota" ]; then
+                echo -e "${vermelho}Nota digitada inexistente, tente novamente.${sc}"
+                return
+        fi
 	echo
-	echo 'Entre as opções, qual nota deseja editar.'
-	read -r
-	case opcao in
-		
-	esac
+	nano "$nota"
+		echo -e "${verde}Nota editada com sucesso.${sc} "
+	
+	while true; do
+		read -p "Deseja editar mais alguma nota? [S/n]" resp
+		resp=$(echo "$resp" | tr '[:lower:]' '[:upper:]')
+		if [ "$resp" == "S" ]; then
+			editar_nota
+			break
+		elif [ "$resp" == "N" ]; then
+			echo "Certo. Retornando para o menu"
+			break
+		else
+			echo "Resposta incorreta, deve respoder ${ADDS}S${RMS} ou ${ADDS}N${RMS}"
+		fi
+	done
 }
 
 #### Menu1
