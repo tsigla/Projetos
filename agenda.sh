@@ -148,7 +148,8 @@ inicio(){
 		echo "                                  "
 		echo -e " 1. ${ciano}Adicionar anatoção${sc}"
 		echo -e " 2. ${ciano}Editar anotação${sc}"
-		echo -e " 3. ${ciano}Sair${sc}"
+  		echo -e " 3. ${ciano}Visualizar anotação${sc}"
+		echo -e " 4. ${ciano}Sair${sc}"
 		echo
 		echo '⬗--------------------------------⬗'
 	
@@ -157,7 +158,8 @@ inicio(){
 	case $opcao in
 		1) adicionar_nota ;;
 		2) editar_nota ;;
-		3) exit 0 ;;
+  		3) visualizar_nota ;;
+		4) exit 0 ;;
 	esac
 	done
 }
