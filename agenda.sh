@@ -1,6 +1,45 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-### Cores
+##############################################################################
+# Nome do Programa: agenda.sh
+# Descrição: O programa realiza a criação, edição, visualização e remoção das notas.
+# Versão: 1.1
+# Autor: Talys
+# Data: 09-08-2024
+# Licença: MIT
+#   Copyright (c) 2024 Talys
+#	
+#	Por meio deste, é concedida permissão, gratuitamente, a qualquer pessoa 
+#	que obtenha uma cópia deste software e dos arquivos de documentação associados (o "Software"), 
+#	para lidar com o Software sem restrições, incluindo, sem limitação, 
+#	os direitos de usar, copiar, modificar, mesclar, publicar, distribuir, sublicenciar e/ou vender cópias do Software, 
+#	e permitir que as pessoas a quem o Software é fornecido o façam, sujeitas às seguintes condições:
+#
+#	O aviso de direitos autorais acima e este aviso de permissão deverão ser incluídos em todas as cópias ou partes substanciais do Software.
+#
+#	O SOFTWARE É FORNECIDO "NO ESTADO EM QUE SE ENCONTRA", SEM GARANTIA DE QUALQUER TIPO, EXPRESSA OU IMPLÍCITA, 
+#	INCLUINDO, MAS NÃO SE LIMITANDO ÀS GARANTIAS DE COMERCIALIZAÇÃO, ADEQUAÇÃO A UM DETERMINADO FIM E NÃO VIOLAÇÃO. 
+#	EM NENHUMA HIPÓTESE OS AUTORES OU TITULARES DOS DIREITOS AUTORAIS SERÃO RESPONSÁVEIS POR QUALQUER RECLAMAÇÃO, DANO OU OUTRA RESPONSABILIDADE, 
+#	SEJA EM UMA AÇÃO DE CONTRATO, DELITO OU OUTRA FORMA, DECORRENTE DE, FORA DE OU EM CONEXÃO COM O SOFTWARE OU O USO OU OUTRAS NEGOCIAÇÕES NO SOFTWARE.
+#
+# Uso:
+#   ./agenda.sh 
+#   porém podendo criar um "alias" para facilitar a chamada.
+#
+# Histórico de Versões:
+#   1.0 - 09-08-2024 - Versão inicial
+#   1.1 - 10-08-2024 - Correção das funções
+#
+# Contato:
+#   - Email: [ts.sigla@gmail.com]
+#   - GitHub: https://github.com/tsigla
+#
+##############################################################################
+
+#### Debugador
+set -e
+
+#### Cores
 preto='\033[0;30m'
 verde_escuro='\033[1;30m'
 vermelho='\033[0;31m'
@@ -22,40 +61,41 @@ sc='\033[0m' # Sem cor
 ADDS=$(tput smul)
 RMS=$(tput sgr0)
 
-#### Caminho
-AGENDA="/home/$USER/Agenda"
-
 #### Criar o diretório Agenda no home e o -p valida sem erro caso já existir.
-mkdir -p "$AGENDA_DIR"
+AGENDA="/home/$USER/Agenda"
+mkdir -p "$AGENDA"
 
 #### Função para adicionar uma nova nota
 adicionar_nota(){
 	clear
 	echo -e "Digite o nome do título da nova nota"
 	read -r nota
-	arquivo="$AGENDA/$nota.txt"
-
-	if [ -f "$arquivo" ]; then
-		echo "Título já existente, tente outro título. "
-		return
+ 	nota="$AGENDA/$nota.txt"
+ 
+	if [ -f "$nota" ]; then
+ 		echo
+		echo -e "${vermelho}Título já existente, tente outro título.${sc}"
+  		sleep 2
+  		adicionar_nota
 	fi
 
 	echo -e "${amarelo}Digite o conteúdo da nota. Tecla ${ADDS}CTRL+D${RMS} ${amarelo}quando terminar.${sc}"
-	cat > "$arquivo"
+	cat > "$nota"
 	echo
-	echo -e "${verde}Nota ${rosa}$titulo${verde}criado com sucesso.${sc}"
+	echo -e "${verde}Nota ${rosa}$nota${verde}criada com sucesso.${sc}"
 }
 
+#### Função para Editar a nota 
 editar_nota(){
 	clear
         ls -1 "$AGENDA" | cut -d "." -f 1 
         echo 'Entre as opções, qual nota deseja editar.'
         read -r nota
         nota="$AGENDA/$nota.txt"
-        
-        if [ ! -f "$nota" ]; then
+	
+        if [ ! -f "$nota" ]; then #Validar se a nota não existe 
                 echo -e "${vermelho}Nota digitada inexistente, tente novamente.${sc}"
-                return
+                editar_nota
         fi
 	echo
 	nano "$nota"
@@ -63,21 +103,39 @@ editar_nota(){
 	
 	while true; do
 		read -p "Deseja editar mais alguma nota? [S/n]" resp
-		resp=$(echo "$resp" | tr '[:lower:]' '[:upper:]')
+		resp=$(echo "$resp" | tr '[:lower:]' '[:upper:]') # Transformação da esposta em maiusculos
 		if [ "$resp" == "S" ]; then
 			editar_nota
-			break
 		elif [ "$resp" == "N" ]; then
 			echo "Certo. Retornando para o menu"
-			break
+			inicio
 		else
+  			echo
 			echo "Resposta incorreta, deve respoder ${ADDS}S${RMS} ou ${ADDS}N${RMS}"
+   			echo
 		fi
 	done
 }
 
+visualizar_nota(){
+	clear
+ 	lista=$(ls -1 "$AGENDA" | cut -d "." -f 1)
+  	echo -e "${verde}➺${sc} $lista"
+   	echo
+ 	echo 'Qual nota deseja vusalizar?'
+  	read -r nota
+	nota="$AGENDA/$nota.txt"
+
+   	if [ ! -f $nota]; then
+    		echo -e "${vermelho_claro}Nota não encotrada para visualização, digite novamente."
+      		return
+	fi
+ 
+ 	cat $nota
+}
+
 #### Menu1
-main(){
+inicio(){
 		echo '   ___  ___   ___  _ _  ___  ___ '
 		echo '  | . |/  _> | __>| \ || . \| . |'
 		echo '  |   || <_/\| _> |   || | ||   |'
@@ -103,4 +161,4 @@ main(){
 	esac
 	done
 }
-main
+inicio
