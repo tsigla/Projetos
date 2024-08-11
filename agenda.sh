@@ -37,14 +37,15 @@
 ##############################################################################
 
 #### Debugador
-set -e
+set -euo pipefail # Habilita o modo de script seguro
+IFS=$'\n\t'       # Defineo separador interno para nova linha e tabulação
 
 #### Cores
 preto='\033[0;30m'
 verde_escuro='\033[1;30m'
 vermelho='\033[0;31m'
 vermelho_claro='\033[1;31m'
-verde='\033[0;32m'='\033[1;32m'
+verde='\033[0;32m'
 amarelo='\033[1;33m'
 azul='\033[0;34m'
 azul_claro='\033[1;34m'
@@ -88,7 +89,7 @@ adicionar_nota(){
 #### Função para Editar a nota 
 editar_nota(){
 	clear
-        ls -1 "$AGENDA" | cut -d "." -f 1 
+        find "$AGENDA" -maxdepth 1 -type f -name "*.txt" -exec basename {} .txt \; 
         echo 'Entre as opções, qual nota deseja editar.'
         read -r nota
         nota="$AGENDA/$nota.txt"
@@ -119,19 +120,39 @@ editar_nota(){
 
 visualizar_nota(){
 	clear
- 	lista=$(ls -1 "$AGENDA" | cut -d "." -f 1)
-  	echo -e "${verde}➺${sc} $lista"
-   	echo
+ 	lista=$(ls "$AGENDA" | cut -d "." -f 1)
+  	for v in $lista; do
+  		echo -e "${verde}➺ ${sc}$v"
+	done
+	echo
  	echo 'Qual nota deseja vusalizar?'
   	read -r nota
 	nota="$AGENDA/$nota.txt"
 
-   	if [ ! -f $nota]; then
+   	if [ ! -f "$nota" ]; then
     		echo -e "${vermelho_claro}Nota não encotrada para visualização, digite novamente."
       		return
 	fi
  
- 	cat $nota
+ 	cat "$nota"
+  	echo
+
+}
+
+remove_nota(){
+	clear
+ 	lista=$(find "$AGENDA" -maxdepth 1 -type f -name "*.txt" -exec basename {} .txt \;)
+  	for r in "$lista"; do
+   		echo -e "${vermelho}-${sc} $r"
+     	done
+      	read -r nota
+       	nota="$AGENDA/$nota.txt"
+        if [ ! -f "$nota" ]; then
+		echo
+  		echo -e "${vermelho}Nota digitada inexistente, digite novamente."
+    	fi
+
+     rm $nota
 }
 
 #### Menu1
@@ -149,7 +170,8 @@ inicio(){
 		echo -e " 1. ${ciano}Adicionar anatoção${sc}"
 		echo -e " 2. ${ciano}Editar anotação${sc}"
   		echo -e " 3. ${ciano}Visualizar anotação${sc}"
-		echo -e " 4. ${ciano}Sair${sc}"
+    		echo -e " 4. ${ciano}Remover anotação${sc}"
+		echo -e " 5. ${ciano}Sair${sc}"
 		echo
 		echo '⬗--------------------------------⬗'
 	
@@ -159,8 +181,10 @@ inicio(){
 		1) adicionar_nota ;;
 		2) editar_nota ;;
   		3) visualizar_nota ;;
-		4) exit 0 ;;
+		4) remove_nota ;;
+  		5) exit 0 ;;
 	esac
 	done
 }
 inicio
+ 
