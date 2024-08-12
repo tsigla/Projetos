@@ -1,2 +1,2 @@
 # Projetos
-Scripts e comentários com boas intenções, assim evitando frustrações (ou não). 
+Scripts/Programas com boas intenções, assim evitando frustrações (ou não). 
