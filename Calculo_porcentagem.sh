@@ -27,7 +27,7 @@
 #   porém podendo criar um "alias" para facilitar a chamada.
 #
 # Histórico de Versões:
-#   1.0 - 09-08-2024 - Versão inicial
+#   1.0 - 16-06-2024 - Versão inicial
 # 
 # Contato:
 #   - Email: [ts.sigla@gmail.com]
