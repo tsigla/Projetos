@@ -1,5 +1,40 @@
 #!/bin/bash
 
+##############################################################################
+# Nome do Programa: Calculo_porcentagem.sh
+# Descrição: O programa realiza a criação, edição, visualização e remoção das notas.
+# Versão: 1.1
+# Autor: Talys
+# Data: 15-06-2024
+# Licença: MIT
+#   Copyright (c) 2024 Talys
+#	
+#	Por meio deste, é concedida permissão, gratuitamente, a qualquer pessoa 
+#	que obtenha uma cópia deste software e dos arquivos de documentação associados (o "Software"), 
+#	para lidar com o Software sem restrições, incluindo, sem limitação, 
+#	os direitos de usar, copiar, modificar, mesclar, publicar, distribuir, sublicenciar e/ou vender cópias do Software, 
+#	e permitir que as pessoas a quem o Software é fornecido o façam, sujeitas às seguintes condições:
+#
+#	O aviso de direitos autorais acima e este aviso de permissão deverão ser incluídos em todas as cópias ou partes substanciais do Software.
+#
+#	O SOFTWARE É FORNECIDO "NO ESTADO EM QUE SE ENCONTRA", SEM GARANTIA DE QUALQUER TIPO, EXPRESSA OU IMPLÍCITA, 
+#	INCLUINDO, MAS NÃO SE LIMITANDO ÀS GARANTIAS DE COMERCIALIZAÇÃO, ADEQUAÇÃO A UM DETERMINADO FIM E NÃO VIOLAÇÃO. 
+#	EM NENHUMA HIPÓTESE OS AUTORES OU TITULARES DOS DIREITOS AUTORAIS SERÃO RESPONSÁVEIS POR QUALQUER RECLAMAÇÃO, DANO OU OUTRA RESPONSABILIDADE, 
+#	SEJA EM UMA AÇÃO DE CONTRATO, DELITO OU OUTRA FORMA, DECORRENTE DE, FORA DE OU EM CONEXÃO COM O SOFTWARE OU O USO OU OUTRAS NEGOCIAÇÕES NO SOFTWARE.
+#
+# Uso:
+#   ./Calculo_porcentagem.sh
+#   porém podendo criar um "alias" para facilitar a chamada.
+#
+# Histórico de Versões:
+#   1.0 - 09-08-2024 - Versão inicial
+# 
+# Contato:
+#   - Email: [ts.sigla@gmail.com]
+#   - GitHub: https://github.com/tsigla
+#
+##############################################################################
+
 # Boas vindas!
 echo -e "O programa foi criado para descobrir qual é a diferença da porcentagem entre os valores passados.
 Exemplo visual; 
