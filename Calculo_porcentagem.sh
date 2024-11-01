@@ -3,7 +3,7 @@
 ##############################################################################
 # Nome do Programa: Calculo_porcentagem.sh
 # Descrição: O programa realiza a criação, edição, visualização e remoção das notas.
-# Versão: 1.1
+# Versão: 1.0
 # Autor: Talys
 # Data: 15-06-2024
 # Licença: MIT
