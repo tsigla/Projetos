@@ -37,7 +37,12 @@
 #
 ##############################################################################
 
-registar_venda(){
+registrar_venda(){
+	
+	clear
+
+	> venda
+
 	echo "      :::     ::: :::::::::: ::::    ::: :::::::::      :::     "
 	echo "      :+:     :+: :+:        :+:+:   :+: :+:    :+:   :+: :+:   "
 	echo "      +:+     +:+ +:+        :+:+:+  +:+ +:+    +:+  +:+   +:+  "
@@ -51,15 +56,21 @@ registar_venda(){
 		echo
 		read -p "Digita o ID do prduto: " id
 		echo
+		
 		if [[ -z "$id" ]]; then 
-			break
-		fi
-		 
-		#produto_info=$(mysql -u "-?-" -p"-?-" -D "Estoque" -e "SELECT nome, valor FROM Produtos WHERE id='$id';")
-    ### Conecta no banco de dados e retorna o o produto com o ID mencionado.
-		produto_info=$(mysql -D "Estoque" -e "SELECT nome, valor FROM Produtos WHERE id='$id';")
-		echo "$produto_info"
-
+			echo "						Total: $total"
+			echo
+			read -p "Deseja realizar mais alguma venda? " opcao
+			[[ "$opcao" = "s" ]] && registrar_venda || clear; return
+		fi		
+				 
+		#produto_info=$(mysql -u "talys" -p"b@nc0Tal123l" -D "Estoque" -e "SELECT nome, valor FROM Produtos WHERE id='$id';")
+		info_produto=$(mysql -D "Estoque" -e "SELECT nome, valor FROM Produtos WHERE id='$id';" | sed -n '2p')
+		mysql -D "Estoque" -e "SELECT nome, valor FROM Produtos WHERE id='$id';" | sed -n '2p' | awk '{print $NF}' >> venda
+		
+		total=$(LC_NUMERIC="en_US.UTF-8" awk '{s+=$1} END {printf "%.2f" , s}' venda)
+		
+		echo "                    $info_produto"
 	done
 }
 
@@ -93,7 +104,7 @@ menu1(){
 		case $opcao in
 			1) 	
 				clear
-				registar_venda
+				registrar_venda
 				;;
 			2)
 				clear
@@ -117,45 +128,3 @@ done
 }
 ### Tela inicial
 menu1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
