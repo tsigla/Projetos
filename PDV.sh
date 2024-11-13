@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-##############################################################################
+################################################################################################################################################################
 # Nome do Programa: PDV
 # Descrição: O programa realiza cadastro de produto, edição, visualização, remoção, adição, recebimentos de valores e cadastro de notas.
-# Versão: 1.2
+# Versão: 1.3
 # Autor: Talys
 # Data: 31-10-2024
 # Licença: MIT
@@ -30,49 +30,65 @@
 #   1.0 - 31-10-2024 - Versão inicial
 #   1.1 - 10-11-2024 - Ajuste da função "menu1"
 #   1.2 - 10-11-2024 - Ajuste 1 da função "registrar_venda"
+#   1.3 - 12-11-2024 - Ajuste 2 da função "registrar_venda"
 # 
 # Contato:
 #   - Email: [ts.sigla@gmail.com]
 #   - GitHub: https://github.com/tsigla
 #
-##############################################################################
+#######################################################################################################################################################################
 
-registrar_venda(){
-	
-	clear
+registrar_venda() {
 
-	> venda
+    clear
 
-	echo "      :::     ::: :::::::::: ::::    ::: :::::::::      :::     "
-	echo "      :+:     :+: :+:        :+:+:   :+: :+:    :+:   :+: :+:   "
-	echo "      +:+     +:+ +:+        :+:+:+  +:+ +:+    +:+  +:+   +:+  "
-	echo "      +#+     +:+ +#++:++#   +#+ +:+ +#+ +#+    +:+ +#++:++#++: "
-	echo "       +#+   +#+  +#+        +#+  +#+#+# +#+    +#+ +#+     +#+ "
-	echo "        #+#+#+#   #+#        #+#   #+#+# #+#    #+# #+#     #+# "
-	echo "          ###     ########## ###    #### #########  ###     ### "
-	
-	while true; do
-		echo "-------------------------------------------------------------------------"
-		echo
-		read -p "Digita o ID do prduto: " id
-		echo
-		
-		if [[ -z "$id" ]]; then 
-			echo "						Total: $total"
-			echo
-			read -p "Deseja realizar mais alguma venda? " opcao
-			[[ "$opcao" = "s" ]] && registrar_venda || clear; return
-		fi		
-				 
-		#produto_info=$(mysql -u "talys" -p"b@nc0Tal123l" -D "Estoque" -e "SELECT nome, valor FROM Produtos WHERE id='$id';")
-		info_produto=$(mysql -D "Estoque" -e "SELECT nome, valor FROM Produtos WHERE id='$id';" | sed -n '2p')
-		mysql -D "Estoque" -e "SELECT nome, valor FROM Produtos WHERE id='$id';" | sed -n '2p' | awk '{print $NF}' >> venda
-		
-		total=$(LC_NUMERIC="en_US.UTF-8" awk '{s+=$1} END {printf "%.2f" , s}' venda)
-		
-		echo "                    $info_produto"
-	done
+    ### Limpa o arquivo de venda quando uma nova venda vai ser realizada.
+    > venda.txt
+
+    echo "      :::     ::: :::::::::: ::::    ::: :::::::::      :::     "
+    echo "      :+:     :+: :+:        :+:+:   :+: :+:    :+:   :+: :+:   "
+    echo "      +:+     +:+ +:+        :+:+:+  +:+ +:+    +:+  +:+   +:+  "
+    echo "      +#+     +:+ +#++:++#   +#+ +:+ +#+ +#+    +:+ +#++:++#++: "
+    echo "       +#+   +#+  +#+        +#+  +#+#+# +#+    +#+ +#+     +#+ "
+    echo "        #+#+#+#   #+#        #+#   #+#+# #+#    #+# #+#     #+# "
+    echo "          ###     ########## ###    #### #########  ###     ### "
+
+    total=0
+
+    while true; do
+        echo "-------------------------------------------------------------------------"
+        echo
+        read -p "Digite o ID do produto: " id
+        echo
+
+        ### Encerra a venda ao receber um ID vazio e mostra o valor total.
+        ### Condição para realizar uma nova venda ou voltar ao Menu1.
+        if [[ -z "$id" ]]; then 
+ 	   
+ 	   ### Programa zenity exibe caixa com condição de escolha para uma nova venda ou não.
+           if zenity --question --text="Deseja realizar realizar mais uma venda?                                                                    Valor total da venda: $total"; then
+            	### Independete da escolha, vai salvar a venda no arquivo "vendas_diárias.txt"
+            	echo "$(date '+%Y-%m-%d %H:%M') - Total: $total" >> Vendas_diárias.txt
+            	clear
+            	registrar_venda
+           else
+           	echo "$(date '+%Y-%m-%d %H:%M') - Total: $total" >> Vendas_diárias.txt
+           	clear
+           	menu1 
+           fi        
+        fi        
+        
+        ### Busca no banco de dados o produto com o ID informado e armazena o valor no arquivo "venda.txt". 
+        info_produto=$(mysql -D "Estoque" -e "SELECT nome, valor FROM Produtos WHERE id='$id';" | sed -n '2p')
+        mysql -D "Estoque" -e "SELECT nome, valor FROM Produtos WHERE id='$id';" | sed -n '2p' | awk '{print $NF}' >> venda.txt
+        
+        ### Converte vírgula para ponto e soma os valores do arquivo da venda atual.
+        total=$(LC_NUMERIC="en_US.UTF-8" awk '{s+=$1} END {printf "%.2f", s}' venda.txt)
+
+        echo "                    $info_produto"
+    done
 }
+
 
 ### Menu 1
 menu1(){
