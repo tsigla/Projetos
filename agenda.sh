@@ -29,12 +29,28 @@
 # Histórico de Versões:
 #   1.0 - 09-08-2024 - Versão inicial
 #   1.1 - 10-08-2024 - Correção das funções
+#   1.2 - 15-11-2024 - Ajuste de parametros e acrescimo na estética
 #
 # Contato:
 #   - Email: [ts.sigla@gmail.com]
 #   - GitHub: https://github.com/tsigla
 #
 ##############################################################################
+
+#######################################################################################################################################
+#INFO
+#
+#
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> editar_nota
+#-find "AGENDA": Inicia a busca na pasta chamada AGENDA.
+#-maxdepth 1: Define a profundidade máxima de busca como 1, o que significa que apenas os arquivos no diretório AGENDA serão verificados, sem buscar em subdiretórios.
+#-type f: Limita a busca a arquivos normais (exclui diretórios e outros tipos de arquivos).
+#-name "*.txt": Especifica o padrão do nome dos arquivos a serem encontrados. Neste caso, somente arquivos com extensão .txt serão incluídos.
+#-exec basename {} .txt \;: Para cada arquivo encontrado que corresponde ao padrão, executa o comando basename. O basename remove a extensão .txt do nome completo do arquivo, exibindo apenas o nome do arquivo sem a extensão.
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+#
+#
+#########################################################################################################################################
 
 #### Debugador
 set -euo pipefail # Habilita o modo de script seguro
@@ -63,43 +79,68 @@ ADDS=$(tput smul)
 RMS=$(tput sgr0)
 
 #### Criar o diretório Agenda no home e o -p valida sem erro caso já existir.
-AGENDA="/home/$USER/Agenda"
-mkdir -p "$AGENDA"
+mkdir -p AGENDA
 
 #### Função para adicionar uma nova nota
 adicionar_nota(){
 	clear
 	echo -e "Digite o nome do título da nova nota"
-	read -r nota
- 	nota="$AGENDA/$nota.txt"
- 
+	echo
+	read -rp " > " nota
+ 	nota="AGENDA/$nota.txt"
+ 	
+ 	### Comparação de nomes de arquivos, não permitindo com o mesmo nome.
 	if [ -f "$nota" ]; then
  		echo
-		echo -e "${vermelho}Título já existente, tente outro título.${sc}"
-  		sleep 2
-  		adicionar_nota
+		echo -e "${vermelho}Título já existente. Deseja editar a nota? (S/n)${sc}"
+		read -p " > " opcao
+		if [[ "$opcao" = s ]]; then
+			nvim "$nota"
+			clear
+			inicio
+  		else 
+  			clear	
+  			adicionar_nota
+		fi
 	fi
 
 	echo -e "${amarelo}Digite o conteúdo da nota. Tecla ${ADDS}CTRL+D${RMS} ${amarelo}quando terminar.${sc}"
 	cat > "$nota"
 	echo
 	echo -e "${verde}Nota ${rosa}$nota${verde}criada com sucesso.${sc}"
+	echo
+	echo -e "Deseja realizar a criação de uma nova nota?"
+	read -p " > " opcao2
+		if [[ "$opcao2" = s ]]; then
+			adicionar_nota
+		else
+			clear
+			inicio 
+		fi
 }
 
 #### Função para Editar a nota 
 editar_nota(){
 	clear
-        find "$AGENDA" -maxdepth 1 -type f -name "*.txt" -exec basename {} .txt \; 
+	### busca dentro da pasta todos arquivos e exclui, a extensão que o acompanha.
+	### Mais esplicações, pode ser encontradas no painel de "Info" 
+       	for x in $(find "AGENDA" -maxdepth 1 -type f -name "*.txt" -exec basename {} .txt \;); do
+        echo -e "            ${rosa}✄ ${ciano}$x${sc}"
+        done
+        echo
+        
         echo 'Entre as opções, qual nota deseja editar.'
         read -r nota
-        nota="$AGENDA/$nota.txt"
+        nota="AGENDA/$nota.txt"
 	
-        if [ ! -f "$nota" ]; then #Validar se a nota não existe 
+	#Validar se a nota não existe 
+        if [ ! -f "$nota" ]; then 
                 echo -e "${vermelho}Nota digitada inexistente, tente novamente.${sc}"
+                clear
                 editar_nota
         fi
 	echo
-	nano "$nota"
+	nvim "$nota"
 		echo -e "${verde}Nota editada com sucesso.${sc} "
 	
 	while true; do
