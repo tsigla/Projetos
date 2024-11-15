@@ -29,7 +29,6 @@
 # Histórico de Versões:
 #   1.0 - 09-08-2024 - Versão inicial
 #   1.1 - 10-08-2024 - Correção das funções
-#   1.2 - 15-11-2024 - Ajuste de parametros e acrescimo na estética
 #
 # Contato:
 #   - Email: [ts.sigla@gmail.com]
@@ -125,6 +124,7 @@ editar_nota(){
 	### busca dentro da pasta todos arquivos e exclui, a extensão que o acompanha.
 	### Mais esplicações, pode ser encontradas no painel de "Info" 
        	for x in $(find "AGENDA" -maxdepth 1 -type f -name "*.txt" -exec basename {} .txt \;); do
+       	echo
         echo -e "            ${rosa}✄ ${ciano}$x${sc}"
         done
         echo
@@ -161,17 +161,18 @@ editar_nota(){
 
 visualizar_nota(){
 	clear
- 	lista=$(ls "$AGENDA" | cut -d "." -f 1)
+ 	lista=$(ls "AGENDA" | cut -d "." -f 1)
   	for v in $lista; do
-  		echo -e "${verde}➺ ${sc}$v"
+  		echo
+  		echo -e "    ${verde}➺ ${sc}$v"
 	done
 	echo
  	echo 'Qual nota deseja vusalizar?'
   	read -r nota
-	nota="$AGENDA/$nota.txt"
+	nota="AGENDA/$nota.txt"
 
    	if [ ! -f "$nota" ]; then
-    		echo -e "${vermelho_claro}Nota não encotrada para visualização, digite novamente."
+    		echo -e "${vermelho_claro}Nota não encotrada para visualização, digite novamente.${sc}"
       		return
 	fi
  
@@ -180,24 +181,41 @@ visualizar_nota(){
 
 }
 
-remove_nota(){
-	clear
- 	lista=$(find "$AGENDA" -maxdepth 1 -type f -name "*.txt" -exec basename {} .txt \;)
-  	for r in "$lista"; do
-   		echo -e "${vermelho}-${sc} $r"
-     	done
-      	read -r nota
-       	nota="$AGENDA/$nota.txt"
-        if [ ! -f "$nota" ]; then
-		echo
-  		echo -e "${vermelho}Nota digitada inexistente, digite novamente."
-    	fi
+remove_nota() {
+    clear
 
-     rm $nota
+    # Lista todas as notas na pasta AGENDA
+    lista=$(find "AGENDA" -maxdepth 1 -type f -name "*.txt" -exec basename {} .txt \;)
+    
+    if [ -z "$lista" ]; then
+        echo -e "${vermelho}Nenhuma nota encontrada.${sc}"
+        return
+    fi
+
+    echo "Notas disponíveis:"
+    for r in $lista; do
+    	echo
+        echo -e "           ${vermelho}♻${sc} $r"
+    done
+
+    echo
+    echo "Digite o nome da nota que deseja remover:"
+    read -r -p " > " nota
+    nota="AGENDA/$nota.txt"
+
+    if [ ! -f "$nota" ]; then
+        echo
+        echo -e "${vermelho}Nota digitada inexistente. Por favor, tente novamente.${sc}"
+        remove_nota
+    fi
+
+    rm "$nota"
+    echo -e "${verde}Nota removida com sucesso!${sc}"
 }
 
 #### Menu1
 inicio(){
+		clear 
 		echo '   ___  ___   ___  _ _  ___  ___ '
 		echo '  | . |/  _> | __>| \ || . \| . |'
 		echo '  |   || <_/\| _> |   || | ||   |'
