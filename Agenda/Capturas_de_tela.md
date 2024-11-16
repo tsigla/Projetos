@@ -13,7 +13,7 @@
      notas se desejar.</li>
      </ul>
      
-[image](https://github.com/user-attachments/assets/d31af2ce-0ea1-4ecd-9764-e28573ce104e)
+![image](https://github.com/user-attachments/assets/d31af2ce-0ea1-4ecd-9764-e28573ce104e)
 ![image](https://github.com/user-attachments/assets/2a51789f-6a9f-4ff7-8e3e-17aab2dbc5f2)
 ![image](https://github.com/user-attachments/assets/0c6c3162-a6f0-481d-9d7b-18e220bff2fc)
 
