@@ -15,7 +15,6 @@
      
 ![image](https://github.com/user-attachments/assets/d31af2ce-0ea1-4ecd-9764-e28573ce104e)
 ![image](https://github.com/user-attachments/assets/2a51789f-6a9f-4ff7-8e3e-17aab2dbc5f2)
-![image](https://github.com/user-attachments/assets/0c6c3162-a6f0-481d-9d7b-18e220bff2fc)
 
 <h2>Visualização de uma ou mais notas.</h2>
 
@@ -23,7 +22,6 @@
 
 <h2>Remoção de uma ou mais notas.</h2>
 
-![image](https://github.com/user-attachments/assets/b66f6d26-9e70-4973-80b1-6b921603aa27)
 ![image](https://github.com/user-attachments/assets/4e5f57c4-a6a5-4138-a969-d60d581ea058)
 
 
