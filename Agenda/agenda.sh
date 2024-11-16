@@ -3,7 +3,7 @@
 ##############################################################################
 # Nome do Programa: agenda.sh
 # Descrição: O programa realiza a criação, edição, visualização e remoção das notas.
-# Versão: 1.1
+# Versão: 1.3
 # Autor: Talys
 # Data: 09-08-2024
 # Licença: MIT
@@ -29,6 +29,8 @@
 # Histórico de Versões:
 #   1.0 - 09-08-2024 - Versão inicial
 #   1.1 - 10-08-2024 - Correção das funções
+#   1.2 - 15-11-2024 - função "remover_nota" foi refeito. Estava com  problemas de buscas e duplicidades nas notas.
+#   1.3 - 16-11-2024 - Programa estável e pronto para uso.
 #
 # Contato:
 #   - Email: [ts.sigla@gmail.com]
