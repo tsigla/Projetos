@@ -3,7 +3,7 @@
 ##############################################################################
 # Nome do Programa: agenda.sh
 # Descrição: O programa realiza a criação, edição, visualização e remoção das notas.
-# Versão: 1.3
+# Versão: 1.1
 # Autor: Talys
 # Data: 09-08-2024
 # Licença: MIT
@@ -29,8 +29,6 @@
 # Histórico de Versões:
 #   1.0 - 09-08-2024 - Versão inicial
 #   1.1 - 10-08-2024 - Correção das funções
-#   1.2 - 15-11-2024 - função "remover_nota" foi refeito. Estava com  problemas de buscas e duplicidades nas notas.
-#   1.3 - 16-11-2024 - Programa estável e pronto para uso.
 #
 # Contato:
 #   - Email: [ts.sigla@gmail.com]
@@ -55,7 +53,7 @@
 
 #### Debugador
 set -euo pipefail # Habilita o modo de script seguro
-IFS=$'\n\t'       # Defineo separador interno para nova linha e tabulação
+IFS=$'\n\t'       # Define o separador interno para nova linha e tabulação
 
 #### Cores
 preto='\033[0;30m'
@@ -66,8 +64,8 @@ verde='\033[0;32m'
 amarelo='\033[1;33m'
 azul='\033[0;34m'
 azul_claro='\033[1;34m'
-rocho='\033[0;35m'
-rocho_claro='\033[1;35m'
+roxo='\033[0;35m'
+roxo_claro='\033[1;35m'
 ciano='\033[0;36m'
 ciano_claro='\033[1;36m'
 cinza_claro='\033[0;37m'
@@ -75,7 +73,7 @@ branco='\033[1;37m'
 rosa='\033[95m'
 sc='\033[0m' # Sem cor
 
-#### sumbliar o texto
+#### sublinha o texto
 ADDS=$(tput smul)
 RMS=$(tput sgr0)
 
@@ -93,7 +91,7 @@ adicionar_nota(){
  	### Comparação de nomes de arquivos, não permitindo com o mesmo nome.
 	if [ -f "$nota" ]; then
  		echo
-		echo -e "${vermelho}Título já existente. Deseja editar a nota? (S/n)${sc}"
+		echo -e "${vermelho}Título já existente. Deseja editar a nota com o título $nota? (S/n)${sc}"
 		read -p " > " opcao
 		if [[ "$opcao" = s ]]; then
 			nvim "$nota"
@@ -108,7 +106,7 @@ adicionar_nota(){
 	echo -e "${amarelo}Digite o conteúdo da nota. Tecla ${ADDS}CTRL+D${RMS} ${amarelo}quando terminar.${sc}"
 	cat > "$nota"
 	echo
-	echo -e "${verde}Nota ${rosa}$nota${verde}criada com sucesso.${sc}"
+	echo -e "${verde}Nota ${rosa}$nota${verde} criada com sucesso.${sc}"
 	echo
 	echo -e "Deseja realizar a criação de uma nova nota?"
 	read -p " > " opcao2
@@ -124,18 +122,18 @@ adicionar_nota(){
 editar_nota(){
 	clear
 	### busca dentro da pasta todos arquivos e exclui, a extensão que o acompanha.
-	### Mais esplicações, pode ser encontradas no painel de "Info" 
+	### Mais explicações, pode ser encontradas no painel de "Info".
        	for x in $(find "AGENDA" -maxdepth 1 -type f -name "*.txt" -exec basename {} .txt \;); do
        	echo
         echo -e "            ${rosa}✄ ${ciano}$x${sc}"
         done
         echo
         
-        echo 'Entre as opções, qual nota deseja editar.'
-        read -r nota
+        echo 'Entre as opções, qual nota deseja editar?'
+        read -r -p " > " nota
         nota="AGENDA/$nota.txt"
 	
-	#Validar se a nota não existe 
+	#Validar se a nota existe.
         if [ ! -f "$nota" ]; then 
                 echo -e "${vermelho}Nota digitada inexistente, tente novamente.${sc}"
                 clear
@@ -147,7 +145,7 @@ editar_nota(){
 	
 	while true; do
 		read -p "Deseja editar mais alguma nota? [S/n]" resp
-		resp=$(echo "$resp" | tr '[:lower:]' '[:upper:]') # Transformação da esposta em maiusculos
+		resp=$(echo "$resp" | tr '[:lower:]' '[:upper:]') # Transformação da resposta em maiúsculos.
 		if [ "$resp" == "S" ]; then
 			editar_nota
 		elif [ "$resp" == "N" ]; then
@@ -155,7 +153,7 @@ editar_nota(){
 			inicio
 		else
   			echo
-			echo "Resposta incorreta, deve respoder ${ADDS}S${RMS} ou ${ADDS}N${RMS}"
+			echo "Resposta incorreta, deve responder ${ADDS}S${RMS} ou ${ADDS}N${RMS}"
    			echo
 		fi
 	done
@@ -169,12 +167,12 @@ visualizar_nota(){
   		echo -e "    ${verde}➺ ${sc}$v"
 	done
 	echo
- 	echo 'Qual nota deseja vusalizar?'
-  	read -r nota
+ 	echo 'Qual nota deseja visualizar?'
+  	read -r -p " > " nota
 	nota="AGENDA/$nota.txt"
 
    	if [ ! -f "$nota" ]; then
-    		echo -e "${vermelho_claro}Nota não encotrada para visualização, digite novamente.${sc}"
+    		echo -e "${vermelho_claro}Nota não encontrada para visualização, digite novamente.${sc}"
       		return
 	fi
  
@@ -190,7 +188,7 @@ remove_nota() {
     lista=$(find "AGENDA" -maxdepth 1 -type f -name "*.txt" -exec basename {} .txt \;)
     
     if [ -z "$lista" ]; then
-        echo -e "${vermelho}Nenhuma nota encontrada.${sc}"
+        echo -e "${vermelho}Nenhuma nota foi encontrada.${sc}"
         return
     fi
 
@@ -225,10 +223,10 @@ inicio(){
                                
 	while true; do
 		echo '⬗--------------------------------⬗'
-		echo -e "   Escolha uma opção           "
+		echo -e "       Escolha uma opção        "
 		echo '⬗--------------------------------⬗'
 		echo "                                  "
-		echo -e " 1. ${ciano}Adicionar anatoção${sc}"
+		echo -e " 1. ${ciano}Adicionar anotação${sc}"
 		echo -e " 2. ${ciano}Editar anotação${sc}"
   		echo -e " 3. ${ciano}Visualizar anotação${sc}"
     		echo -e " 4. ${ciano}Remover anotação${sc}"
@@ -236,7 +234,7 @@ inicio(){
 		echo
 		echo '⬗--------------------------------⬗'
 	
-		read -r opcao
+		read -r -p " > " opcao
 	
 	case $opcao in
 		1) adicionar_nota ;;
