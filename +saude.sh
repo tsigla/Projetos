@@ -67,6 +67,14 @@ calcula_get() {
   echo "$(echo "$tmb * $fator" | bc)"
 }
 
+    __     _______                      __         
+  _|  |_  |   _   | .---.-. .--.--. .--|  | .-----.
+ |_    _| |   1___| |  _  | |  |  | |  _  | |  -__|
+   |__|   |____   | |___._| |_____| |_____| |_____|
+          |:  1   |                                
+          |::.. . |                                
+          `-------' 
+
 # Solicitar informações ao usuário
 echo "=== Calculadora de Calorias ==="
 read -p "Digite seu sexo (m para masculino, f para feminino): " sexo
