@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-#!/usr/bin/env bash
-
 ##############################################################################
-# Nome do Programa: finança.sh
+# Nome do Programa: Finança Simples
 # Descrição: O programa realiza a criação, edição, visualização e remoção de uma finança simples.
-# Versão: 1.0
+# Versão: 1.1
 # Autor: Talys
 # Data: 09-08-2024
 # Licença: MIT
@@ -30,6 +28,7 @@
 #
 # Histórico de Versões:
 #   1.0 - 09-08-2024 - Versão inicial
+#   1.1 - 08-12-2024 - ajustando a função "criar_mes"
 #
 # Contato:
 #   - Email: [ts.sigla@gmail.com]
@@ -67,20 +66,28 @@ editar_mes() {
 }
 
 # Função para criar um mês
-criar_mes() {
-    total=0
-    if [ -d "/home/$USER/Finanças" ]; then
-    	continue
-    else
-    	mkdir -p "/home/$USER/Finanças"
+criar_mes(){
+
+    local total=0
+    if [ ! -d "Finanças" ]; then
+    	mkdir -p "Finanças"
     fi
-    echo "Qual é o mês que deseja criar?"
-    read novo_mes
+    
+    echo "Qual é o nome do novo mês?"
+    echo
+    read -r -p " > " novo_mes
+    echo
+    
     # Verifica se o mês já existe
-    if [ -f "/home/$USER/Finanças/$novo_mes" ]; then
-        echo "O mês já existe! Escolha outro nome."
+    if [ -f "Finanças/$novo_mes" ]; then
+        read -p "O mês já existe! Deseja editar o mês $novo_mes? [s/n] " resp
+        [[ "$resp" == "s" ]] && vim /Finanças/$novo_mes
+        read -p "Deseja criar um mês? " resp2
+        [[ "$resp2" == "s" ]] && criar_mes || menu1
     fi
-  read -p "Qual é o valor do ganho? " ganho >> $novo_mes
+    
+  	read -p "Qual é o valor do ganho? " ganho 
+  	echo "$ganho" >> Finanças/$novo_mes
 		
 		echo
     echo -e "${azul_claro}_+_+_+_Vamos informar as despesas_+_+_+_${sc}"
@@ -90,9 +97,8 @@ criar_mes() {
         read -p "Digite a categoria (ou 'sair' para terminar):" categoria
         if [[ "$categoria" == "sair" ]]; then
             break
-        else
-        		echo "$categoria--->$valor" >> $novo_mes
         fi
+
         read -p "Digite o valor da categoria: " valor
 
         # Validação para garantir que o valor é um número
@@ -100,24 +106,34 @@ criar_mes() {
             echo -e "${vermelho_claro}Valor inválido, por favor insira um número.${sc}"
             continue
         fi
-        
+		
+		echo "$categoria--->$valor" >> Finanças/$novo_mes        
         total=$((total + valor))
     done
 #### Resultado gerado e enviado para o mês criado 
 		echo 
-    echo -e "${ciano_claro}A soma total das despesas é:${sc} ${vermelho_claro}$total${sc}" >> $novo_mes
+    echo -e "A soma total das despesas é: $total" >> Finanças/$novo_mes
     echo -e "${ciano_claro}A soma total das despesas é:${sc} ${vermelho_claro}$total${sc}" 
-    echo -e "${ciano_claro}Seu ganho é: ${amarelo} $ganho ${sc}" >> $novo_mes
+    echo -e "Seu ganho é: $ganho" >> Finanças/$novo_mes
     echo -e "${ciano_claro}Seu ganho é: ${amarelo} $ganho ${sc}"
-    echo -e "${ciano_claro}Seu saldo final é:${verde} $((ganho - total)) ${sc}" >> $novo_mes
-    echo -e "${ciano_claro}Seu saldo final é:${verde} $((ganho - total)) ${sc}"
+    echo -e "Seu saldo final é: $((ganho - total))" >> Finanças/$novo_mes
+    echo -e "${ciano_claro}Seu saldo final é: ${verde}$((ganho - total))${sc}"
 }
 
 # Menu do programa
-echo "Bem-vindo à ajuda de sua finança"
-echo "Favor escolha a opção desejada"
-
+menu1(){
+clear
 while true; do
+
+	echo -e "  _                                            "
+	echo -e " | |  o                                        "
+	echo -e " | |       _  _     __,    _  _     __    __,  "
+	echo -e " |/   |   / |/ |   /  |   / |/ |   /     /  |  "
+	echo -e " |__/ |_/   |  |_/ \_/|_/   |  |_/ \___/ \_/|_/"
+	echo -e " |\                                            "
+	echo -e " |/                                            "
+	echo
+
     echo "|=========================================|"
     echo "|                                         |"
     echo "|  1. Deseja editar um mês já existente.  |"
@@ -125,7 +141,9 @@ while true; do
     echo "|  3. Sair do programa.                   |"
     echo "|                                         |"
     echo "|=========================================|"
-read opcao
+    
+    echo "Favor escolha a opção desejada"
+read -p " > " opcao
 
     case $opcao in
         1)
@@ -148,3 +166,5 @@ read opcao
     esac
     echo
 done
+}
+menu1
