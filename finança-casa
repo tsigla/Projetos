@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 ##############################################################################
-# Nome do Programa: Finança Simples
+# Nome do Programa: finança.sh
 # Descrição: O programa realiza a criação, edição, visualização e remoção de uma finança simples.
-# Versão: 1.1
+# Versão: 1.2
 # Autor: Talys
 # Data: 09-08-2024
 # Licença: MIT
@@ -29,6 +29,7 @@
 # Histórico de Versões:
 #   1.0 - 09-08-2024 - Versão inicial
 #   1.1 - 08-12-2024 - ajustando a função "criar_mes"
+#   1.2 - 15-12-2024 - Lógica funcional "criar_mes"
 #
 # Contato:
 #   - Email: [ts.sigla@gmail.com]
@@ -68,26 +69,61 @@ editar_mes() {
 # Função para criar um mês
 criar_mes(){
 
-    local total=0
+	local total1=0
+    local total2=0
     if [ ! -d "Finanças" ]; then
     	mkdir -p "Finanças"
     fi
     
-    echo "Qual é o nome do novo mês?"
+    echo -e "1.Janeiro 2.Fevereiro 3.Março 4.Abril 5.Maio 6.junho 7.julho 8.Agosto 9.Setembro 10.Outubro 11.Novembro 12.Dezembro"
     echo
-    read -r -p " > " novo_mes
-    echo
+    echo "Qual mês deseja criar (Digite o número correspondente)"
+   	echo
+   	read -p " > " opcao
+    
+    case $opcao in
+    	1) novo_mes="Janeiro" ;;
+    	2) novo_mes="Fevereiro" ;;
+    	3) novo_mes="Março" ;;
+    	4) novo_mes="Abril" ;;
+    	5) novo_mes="Maio" ;;
+    	6) novo_mes="junho" ;;
+    	7) novo_mes="julho" ;;
+    	8) novo_mes="Agosto" ;;
+    	9) novo_mes="Setembro" ;;
+    	10) novo_mes="Outubro" ;;
+    	11) novo_mes="Novembro" ;;
+    	12) novo_mes="Dezembro" ;;
+    	*) echo "Opção inválida, tente novamente."; criar_mes; return
+    esac
+    
+    # Inserir o ano no final de cada finança
+    ano_atual=$(date +%Y)
+    financa_atual="Finanças/${novo_mes}_$ano_atual"
+    
     
     # Verifica se o mês já existe
-    if [ -f "Finanças/$novo_mes" ]; then
+    if [ -f "$financa_atual" ]; then
         read -p "O mês já existe! Deseja editar o mês $novo_mes? [s/n] " resp
-        [[ "$resp" == "s" ]] && vim /Finanças/$novo_mes
+        	if [ "$resp" == "s" ]; then
+        	nvim "$financa_atual"
+        	fi
+        	
         read -p "Deseja criar um mês? " resp2
-        [[ "$resp2" == "s" ]] && criar_mes || menu1
+        	if [ "$resp2" == "s" ]; then
+        		criar_mes
+        	else
+        		return
+        	fi
     fi
     
-  	read -p "Qual é o valor do ganho? " ganho 
-  	echo "$ganho" >> Finanças/$novo_mes
+    ### Adicionando valoes entre espaços e salvando em um array [-a]
+  	read -p "Qual é o valor do ganho? " -a valores
+  	
+  	for ganhos in "${valores[@]}";do
+  		total1=$((total1 + ganhos))
+  	done
+  	
 		
 		echo
     echo -e "${azul_claro}_+_+_+_Vamos informar as despesas_+_+_+_${sc}"
@@ -107,17 +143,19 @@ criar_mes(){
             continue
         fi
 		
-		echo "$categoria--->$valor" >> Finanças/$novo_mes        
-        total=$((total + valor))
+		echo "$categoria--->$valor" >> $financa_atual        
+        total2=$((total2 + valor))
     done
+    
 #### Resultado gerado e enviado para o mês criado 
-		echo 
-    echo -e "A soma total das despesas é: $total" >> Finanças/$novo_mes
-    echo -e "${ciano_claro}A soma total das despesas é:${sc} ${vermelho_claro}$total${sc}" 
-    echo -e "Seu ganho é: $ganho" >> Finanças/$novo_mes
-    echo -e "${ciano_claro}Seu ganho é: ${amarelo} $ganho ${sc}"
-    echo -e "Seu saldo final é: $((ganho - total))" >> Finanças/$novo_mes
-    echo -e "${ciano_claro}Seu saldo final é: ${verde}$((ganho - total))${sc}"
+	echo
+	echo -e " \n" >> $financa_atual
+    echo -e "A soma total das despesas é: $total2" >> $financa_atual
+    echo -e "${ciano_claro}A soma total das despesas é:${sc} ${vermelho_claro}$total2${sc}" 
+    echo -e "Seu ganho é: $total1" >> $financa_atual
+    echo -e "${ciano_claro}Seu ganho é: ${amarelo} $total1 ${sc}"
+    echo -e "Seu saldo final é: $((total1 - total2))" >> $financa_atual
+    echo -e "${ciano_claro}Seu saldo final é: ${verde}$((total1 - total2))${sc}"
 }
 
 # Menu do programa
